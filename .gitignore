@@ -1,0 +1,16 @@
+# Created: 2026-03-17
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Model (large binary file)
+desktop_version/digit_model.pkl
+
+# Flask
+instance/
+
+# OS
+.DS_Store
+Thumbs.db

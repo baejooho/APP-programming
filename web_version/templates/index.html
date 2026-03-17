@@ -1,0 +1,305 @@
+<!-- Created: 2026-03-17 -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Handwritten Digit Recognizer</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f0f2f5;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+      padding: 32px 28px 28px;
+      width: 380px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.25rem;
+      color: #333;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* ── Canvas ── */
+    .canvas-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    #canvas {
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      cursor: crosshair;
+      touch-action: none;
+      background: #fff;
+    }
+
+    /* ── Buttons ── */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    button:active { opacity: .75; }
+
+    #btn-recognize {
+      background: #1a73e8;
+      color: #fff;
+    }
+
+    #btn-clear {
+      background: #eee;
+      color: #555;
+    }
+
+    /* ── Result ── */
+    #result {
+      text-align: center;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #1a73e8;
+      min-height: 52px;
+      margin-bottom: 8px;
+    }
+
+    #confidence-label {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 6px;
+    }
+
+    .progress-track {
+      background: #eee;
+      border-radius: 99px;
+      height: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #1a73e8;
+      border-radius: 99px;
+      transition: width .3s ease;
+      width: 0%;
+    }
+
+    /* ── Probability bars ── */
+    .prob-section h2 {
+      font-size: 0.8rem;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: 10px;
+    }
+
+    .prob-grid {
+      display: flex;
+      align-items: flex-end;
+      gap: 5px;
+      height: 80px;
+    }
+
+    .prob-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .prob-bar {
+      width: 100%;
+      background: #cce0fb;
+      border-radius: 3px 3px 0 0;
+      transition: height .3s ease;
+      height: 0px;
+    }
+
+    .prob-bar.highlight {
+      background: #1a73e8;
+    }
+
+    .prob-digit {
+      font-size: 0.75rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>손글씨 숫자 인식기</h1>
+  <p class="subtitle">0–9 숫자를 아래 캔버스에 그려보세요</p>
+
+  <div class="canvas-wrap">
+    <canvas id="canvas" width="280" height="280"></canvas>
+  </div>
+
+  <div class="btn-row">
+    <button id="btn-recognize">인식</button>
+    <button id="btn-clear">지우기</button>
+  </div>
+
+  <div id="result">—</div>
+  <div id="confidence-label">신뢰도: —</div>
+
+  <div class="progress-track">
+    <div class="progress-fill" id="conf-bar"></div>
+  </div>
+
+  <div class="prob-section">
+    <h2>각 숫자별 확률</h2>
+    <div class="prob-grid" id="prob-grid"></div>
+  </div>
+</div>
+
+<script>
+  // ── Constants ──────────────────────────────
+  const BRUSH_RADIUS = 7;
+
+  // ── Canvas setup ───────────────────────────
+  const canvas  = document.getElementById('canvas');
+  const ctx     = canvas.getContext('2d');
+  let drawing   = false;
+  let lastX     = 0;
+  let lastY     = 0;
+
+  function clearCanvas() {
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  clearCanvas();
+
+  function drawAt(x, y, fromX, fromY) {
+    ctx.fillStyle = '#000';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = BRUSH_RADIUS * 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    ctx.beginPath();
+    ctx.arc(x, y, BRUSH_RADIUS, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(fromX, fromY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width  / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    return {
+      x: (src.clientX - rect.left) * scaleX,
+      y: (src.clientY - rect.top)  * scaleY,
+    };
+  }
+
+  canvas.addEventListener('mousedown',  e => { drawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; drawAt(p.x, p.y, p.x, p.y); });
+  canvas.addEventListener('mousemove',  e => { if (!drawing) return; const p = getPos(e); drawAt(p.x, p.y, lastX, lastY); lastX = p.x; lastY = p.y; });
+  canvas.addEventListener('mouseup',    () => { drawing = false; });
+  canvas.addEventListener('mouseleave', () => { drawing = false; });
+  canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; drawAt(p.x, p.y, p.x, p.y); }, { passive: false });
+  canvas.addEventListener('touchmove',  e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); drawAt(p.x, p.y, lastX, lastY); lastX = p.x; lastY = p.y; }, { passive: false });
+  canvas.addEventListener('touchend',   () => { drawing = false; });
+
+  // ── Probability bars setup ──────────────────
+  const probGrid = document.getElementById('prob-grid');
+  const probBars = [];
+
+  for (let i = 0; i < 10; i++) {
+    const col = document.createElement('div');
+    col.className = 'prob-col';
+
+    const bar = document.createElement('div');
+    bar.className = 'prob-bar';
+    bar.id = `bar-${i}`;
+
+    const label = document.createElement('div');
+    label.className = 'prob-digit';
+    label.textContent = i;
+
+    col.appendChild(bar);
+    col.appendChild(label);
+    probGrid.appendChild(col);
+    probBars.push(bar);
+  }
+
+  // ── Recognize ──────────────────────────────
+  document.getElementById('btn-recognize').addEventListener('click', async () => {
+    const imageData = canvas.toDataURL('image/png');
+
+    const res  = await fetch('/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: imageData }),
+    });
+    const data = await res.json();
+
+    if (data.error === 'empty') {
+      document.getElementById('result').textContent = '—';
+      document.getElementById('confidence-label').textContent = '숫자를 먼저 그려주세요.';
+      return;
+    }
+
+    document.getElementById('result').textContent = data.digit;
+    document.getElementById('confidence-label').textContent = `신뢰도: ${data.confidence}%`;
+    document.getElementById('conf-bar').style.width = `${data.confidence}%`;
+
+    const maxBar = 70; // px
+    probBars.forEach((bar, i) => {
+      const pct = data.probabilities[i] * 100;
+      bar.style.height = `${(pct / 100) * maxBar}px`;
+      bar.classList.toggle('highlight', i === data.digit);
+    });
+  });
+
+  // ── Clear ───────────────────────────────────
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    clearCanvas();
+    document.getElementById('result').textContent = '—';
+    document.getElementById('confidence-label').textContent = '신뢰도: —';
+    document.getElementById('conf-bar').style.width = '0%';
+    probBars.forEach(bar => { bar.style.height = '0px'; bar.classList.remove('highlight'); });
+  });
+</script>
+</body>
+</html>
