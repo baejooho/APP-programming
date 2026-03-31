@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상식 퀴즈 게임</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <!-- ══════════════════════════════════
+         #screen-start  —  시작 화면
+         ══════════════════════════════════ -->
+    <section id="screen-start">
+      <div class="card">
+        <!-- 타이틀 -->
+        <h1 class="game-title"><span>상식</span> 퀴즈</h1>
+        <p class="game-subtitle">카테고리를 선택하고 실력을 확인해보세요!</p>
+
+        <!-- 닉네임 입력 -->
+        <p class="section-label">닉네임</p>
+        <div class="input-group">
+          <input
+            type="text"
+            id="input-nickname"
+            class="input-nickname"
+            placeholder="닉네임을 입력하세요"
+            maxlength="12"
+            autocomplete="off"
+          />
+          <button id="btn-start" class="btn btn-primary">시작</button>
+        </div>
+
+        <!-- 카테고리 선택 -->
+        <p class="section-label">카테고리 선택</p>
+        <div class="category-grid">
+          <button class="btn-category" data-category="한국사">🏯 한국사</button>
+          <button class="btn-category" data-category="과학">🔬 과학</button>
+          <button class="btn-category" data-category="지리">🌍 지리</button>
+          <button class="btn-category" data-category="일반상식">💡 일반상식</button>
+          <button class="btn-category btn-all" data-category="전체">🎲 전체 (랜덤)</button>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- 리더보드 -->
+        <div class="leaderboard-area">
+          <button id="btn-leaderboard" class="btn btn-secondary btn-block">
+            🏆 리더보드 보기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         #screen-difficulty  —  난이도 선택 화면
+         ══════════════════════════════════ -->
+    <section id="screen-difficulty" hidden>
+      <div class="card">
+        <!-- 화면 헤더 -->
+        <div class="screen-header">
+          <h2>난이도 선택</h2>
+          <p>
+            카테고리:
+            <span id="selected-category" class="category-highlight">-</span>
+          </p>
+        </div>
+
+        <!-- 난이도 버튼 3개 -->
+        <div class="difficulty-list">
+          <button class="btn-difficulty" data-difficulty="초급">
+            <span class="diff-label">
+              <span class="diff-name">초급</span>
+              <span class="diff-desc">기초 상식 문제</span>
+            </span>
+            <span class="diff-badge">정답당 +5점</span>
+          </button>
+
+          <button class="btn-difficulty" data-difficulty="중급">
+            <span class="diff-label">
+              <span class="diff-name">중급</span>
+              <span class="diff-desc">심화 상식 문제</span>
+            </span>
+            <span class="diff-badge">정답당 +10점</span>
+          </button>
+
+          <button class="btn-difficulty" data-difficulty="고급">
+            <span class="diff-label">
+              <span class="diff-name">고급</span>
+              <span class="diff-desc">전문 지식 문제</span>
+            </span>
+            <span class="diff-badge">정답당 +15점</span>
+          </button>
+        </div>
+
+        <!-- 뒤로가기 -->
+        <button id="btn-back-to-start" class="btn btn-secondary btn-block">
+          ← 뒤로가기
+        </button>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         #screen-quiz  —  퀴즈 화면
+         ══════════════════════════════════ -->
+    <section id="screen-quiz" hidden>
+      <div class="card">
+
+        <!-- 진행 상황 헤더 -->
+        <div class="quiz-header">
+          <span class="quiz-progress-text">
+            <span id="quiz-current">1</span> / <span id="quiz-total">10</span>
+          </span>
+          <div class="quiz-stats">
+            <span id="quiz-category-display">-</span>
+            <span class="stat-sep">·</span>
+            <span id="quiz-difficulty-display">-</span>
+            <span class="stat-sep">·</span>
+            <span class="score-label">점수</span>&nbsp;<strong id="quiz-score-display">0</strong>
+          </div>
+        </div>
+
+        <!-- 타이머 바 (3단계에서 활성화) -->
+        <div class="timer-bar-wrap">
+          <div id="timer-bar" class="timer-bar"></div>
+        </div>
+
+        <!-- 문제 텍스트 -->
+        <p id="quiz-question" class="quiz-question-text"></p>
+
+        <!-- 보기 버튼 영역 -->
+        <div id="quiz-options" class="quiz-options"></div>
+
+        <!-- 힌트 영역 -->
+        <div class="hint-area">
+          <button id="btn-hint" class="btn-hint">💡 힌트 보기</button>
+          <div id="hint-text" class="hint-text" hidden></div>
+        </div>
+
+        <!-- 피드백 영역 -->
+        <div id="quiz-feedback" class="quiz-feedback" hidden>
+          <p id="feedback-message" class="feedback-message"></p>
+          <p id="feedback-explanation" class="feedback-explanation"></p>
+          <button id="btn-next" class="btn btn-primary btn-block">다음 문제 →</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         #screen-result  —  결과 화면
+         ══════════════════════════════════ -->
+    <section id="screen-result" hidden>
+      <div class="card">
+        <div id="result-container"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         #screen-leaderboard  —  리더보드 화면
+         ══════════════════════════════════ -->
+    <section id="screen-leaderboard" hidden>
+      <div class="card">
+        <div class="screen-header">
+          <h2>🏆 리더보드</h2>
+          <p>점수 기준 상위 10명</p>
+        </div>
+        <div id="leaderboard-container"></div>
+        <button id="btn-leaderboard-back" class="btn btn-secondary btn-block" style="margin-top: 20px;">
+          ← 돌아가기
+        </button>
+      </div>
+    </section>
+
+    <!-- JS 로드 순서: data → score → quiz → timer → leaderboard → app -->
+    <script src="js/data.js"></script>
+    <script src="js/score.js"></script>
+    <script src="js/quiz.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/leaderboard.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
