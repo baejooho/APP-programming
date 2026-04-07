@@ -1,0 +1,143 @@
+/* 프로필 페이지 body 레이아웃 재정의 */
+body.profile-page {
+  display: block !important;
+  padding: 0 0 70px !important;
+  background: #f0f4f8;
+}
+body.profile-page .container {
+  max-width: 760px;
+  margin: 0 auto;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 24px 20px;
+}
+
+/* ── 프로필 헤더 ──────────────────────────────────────────── */
+.profile-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff; padding: 28px 0 24px;
+  margin-bottom: 24px;
+}
+.profile-info {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.avatar {
+  font-size: 2.8rem; background: rgba(255,255,255,0.2);
+  border-radius: 50%; width: 64px; height: 64px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.profile-text { flex: 1; min-width: 0; }
+.profile-text h1 { font-size: 1.3rem; margin: 0 0 4px; font-weight: 700; }
+.profile-stats { font-size: 0.88rem; opacity: 0.88; display: flex; gap: 6px; flex-wrap: wrap; }
+.stat-sep { opacity: 0.6; }
+.settings-btn {
+  background: rgba(255,255,255,0.2) !important;
+  border: 1px solid rgba(255,255,255,0.4) !important;
+  color: #fff !important; width: auto !important;
+  padding: 8px 18px !important; margin: 0 !important;
+}
+.settings-btn:hover { background: rgba(255,255,255,0.35) !important; }
+
+/* ── 검색 ────────────────────────────────────────────────── */
+.search-bar { margin-bottom: 20px; }
+.search-bar input {
+  width: 100%; padding: 12px 16px; font-size: 0.95rem;
+  border: 1px solid #cbd5e0; border-radius: 10px;
+  box-sizing: border-box; outline: none;
+}
+.search-bar input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.15); }
+
+/* ── 레시피 목록 ──────────────────────────────────────────── */
+.recipe-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 80px; }
+.recipe-row {
+  background: #fff; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  padding: 16px 20px;
+  display: flex; align-items: flex-start; gap: 12px; flex-wrap: wrap;
+}
+.row-main { flex: 1; min-width: 0; }
+.row-title { font-size: 1.05rem; font-weight: 700; color: #1a202c; margin-bottom: 6px; }
+.row-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; align-items: center; }
+.row-date { font-size: 0.8rem; color: #a0aec0; margin-left: auto; }
+.row-ingredients { font-size: 0.85rem; color: #718096; }
+.row-memo {
+  margin-top: 6px; font-size: 0.83rem; color: #4a5568;
+  background: #fffbeb; border-left: 3px solid #f6e05e;
+  padding: 4px 8px; border-radius: 0 4px 4px 0;
+}
+.row-actions {
+  display: flex; flex-direction: column; gap: 6px; flex-shrink: 0;
+}
+.row-actions .btn {
+  width: auto; margin: 0; padding: 7px 14px;
+  font-size: 0.82rem; white-space: nowrap;
+}
+.btn-danger {
+  background: #fff5f5; color: #c53030;
+  border: 1px solid #fed7d7;
+}
+.btn-danger:hover { background: #fed7d7; }
+
+/* ── 빈 상태 ──────────────────────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: #a0aec0;
+}
+.empty-state p { font-size: 1rem; margin-bottom: 20px; }
+
+/* ── 설정 모달 내부 ───────────────────────────────────────── */
+.settings-body { display: flex; flex-direction: column; gap: 16px; }
+.settings-label {
+  display: flex; flex-direction: column; gap: 6px;
+  font-size: 0.85rem; color: #4a5568; font-weight: 600;
+}
+.settings-label input[type="text"],
+.settings-label select {
+  padding: 10px 12px; border: 1px solid #cbd5e0;
+  border-radius: 8px; font-size: 0.95rem;
+}
+.diet-checks { display: flex; gap: 16px; font-weight: 400; }
+.diet-checks label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+/* ── 메모 textarea ────────────────────────────────────────── */
+#memoText {
+  width: 100%; box-sizing: border-box;
+  padding: 10px 12px; border: 1px solid #cbd5e0;
+  border-radius: 8px; font-size: 0.95rem; resize: vertical;
+  font-family: inherit;
+}
+#memoText:focus { outline: none; border-color: #667eea; }
+
+/* ── 조리법 모달 내부 ─────────────────────────────────────── */
+.detail-desc { color: #718096; font-size: 0.9rem; margin-bottom: 16px; }
+.missing-box {
+  margin-top: 16px; background: #fffbeb; border: 1px solid #f6e05e;
+  border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; color: #744210;
+}
+
+/* ── 하단 네비게이션 ──────────────────────────────────────── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-top: 1px solid #e2e8f0;
+  display: flex; justify-content: space-around; align-items: center;
+  padding: 10px 0 12px; z-index: 50;
+}
+.bottom-nav a {
+  text-decoration: none; color: #a0aec0;
+  font-size: 0.85rem; display: flex; flex-direction: column;
+  align-items: center; gap: 2px; padding: 0 20px;
+  transition: color 0.15s;
+}
+.bottom-nav a.active { color: #667eea; font-weight: 600; }
+.bottom-nav a:hover { color: #667eea; }
+
+/* ── 모달 (공통 추가) ─────────────────────────────────────── */
+.modal-sm { max-width: 400px; }
+
+/* ── 반응형 ──────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .recipe-row { flex-direction: column; }
+  .row-actions { flex-direction: row; }
+  .row-date { margin-left: 0; }
+}

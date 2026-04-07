@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마이 레시피</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="profile.css" />
+</head>
+<body class="profile-page">
+
+  <!-- 프로필 헤더 -->
+  <div class="profile-header">
+    <div class="container">
+      <div class="profile-info">
+        <div class="avatar" id="avatarEl">👤</div>
+        <div class="profile-text">
+          <h1 id="nicknameEl">마이 레시피</h1>
+          <div class="profile-stats">
+            <span id="recipeCountEl">저장된 레시피 0개</span>
+            <span class="stat-sep">·</span>
+            <span id="topIngredientsEl"></span>
+          </div>
+        </div>
+        <button class="btn btn-secondary settings-btn" id="settingsBtn">⚙ 설정</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- 검색 -->
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="🔍  레시피명 또는 재료로 검색..." />
+    </div>
+
+    <!-- 레시피 목록 -->
+    <div id="recipeList" class="recipe-list"></div>
+    <div id="emptyState" class="empty-state" hidden>
+      <p>저장된 레시피가 없습니다.</p>
+      <a href="/" class="btn btn-primary" style="width:auto;padding:12px 28px;">냉장고 사진 올리러 가기</a>
+    </div>
+  </div>
+
+  <!-- 조리법 모달 -->
+  <div class="modal-overlay" id="detailModal" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="detailTitle"></h2>
+        <button class="modal-close" id="detailClose">✕</button>
+      </div>
+      <div class="modal-body" id="detailBody"></div>
+    </div>
+  </div>
+
+  <!-- 메모 모달 -->
+  <div class="modal-overlay" id="memoModal" hidden>
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>메모 편집</h2>
+        <button class="modal-close" id="memoClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <textarea id="memoText" rows="5" placeholder="이 레시피에 대한 메모를 남겨보세요..."></textarea>
+        <button class="btn btn-primary" id="memoSaveBtn" style="margin-top:12px;">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 설정 모달 -->
+  <div class="modal-overlay" id="settingsModal" hidden>
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>설정</h2>
+        <button class="modal-close" id="settingsClose">✕</button>
+      </div>
+      <div class="modal-body settings-body">
+        <label class="settings-label">닉네임
+          <input type="text" id="settingsNickname" maxlength="20" />
+        </label>
+        <label class="settings-label">기본 인원
+          <select id="settingsServings">
+            <option value="1">1명</option>
+            <option value="2">2명</option>
+            <option value="3">3명</option>
+            <option value="4">4명</option>
+            <option value="6">6명</option>
+            <option value="8">8명</option>
+          </select>
+        </label>
+        <label class="settings-label">기본 조리 시간
+          <select id="settingsTime">
+            <option value="15">15분 이내</option>
+            <option value="30">30분 이내</option>
+            <option value="60">60분 이내</option>
+            <option value="999">제한 없음</option>
+          </select>
+        </label>
+        <div class="settings-label">식단 제한
+          <div class="diet-checks">
+            <label><input type="checkbox" value="채식" class="diet-opt" /> 채식</label>
+            <label><input type="checkbox" value="글루텐 프리" class="diet-opt" /> 글루텐 프리</label>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="settingsSaveBtn" style="margin-top:16px;">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 프로필 최초 생성 모달 -->
+  <div class="modal-overlay" id="setupModal" hidden>
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2>프로필 만들기</h2>
+      </div>
+      <div class="modal-body settings-body">
+        <p style="color:#4a5568;margin-bottom:16px;">닉네임을 설정하면 레시피를 영구 저장할 수 있어요.</p>
+        <label class="settings-label">닉네임
+          <input type="text" id="setupNickname" maxlength="20" placeholder="예: 요리왕" />
+        </label>
+        <button class="btn btn-primary" id="setupSaveBtn" style="margin-top:16px;">시작하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 네비게이션 -->
+  <nav class="bottom-nav">
+    <a href="/">🧊 재료 인식</a>
+    <a href="/recipe.html">🍳 레시피</a>
+    <a href="/profile.html" class="active">👤 마이 레시피</a>
+  </nav>
+
+  <script src="storage.js"></script>
+  <script src="profile.js"></script>
+</body>
+</html>

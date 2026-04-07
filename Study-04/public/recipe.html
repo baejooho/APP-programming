@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>레시피 추천</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="recipe.css" />
+</head>
+<body>
+  <div class="container wide">
+    <header>
+      <h1>🍳 레시피 추천</h1>
+    </header>
+
+    <!-- 재료 직접 입력 (재료 없을 때 표시) -->
+    <div class="manual-input-box" id="manualInputBox" hidden>
+      <p>재료를 직접 입력해서 레시피를 테스트해보세요.</p>
+      <div class="manual-input-row">
+        <input type="text" id="manualInput" placeholder="예: 계란, 당근, 우유, 치즈" />
+        <button class="btn btn-primary" id="manualSubmitBtn">재료 적용</button>
+      </div>
+      <div class="manual-presets">
+        <span>빠른 선택:</span>
+        <button class="preset-btn" data-preset="계란,당근,우유,치즈,양파">🥚 기본 재료</button>
+        <button class="preset-btn" data-preset="닭고기,마늘,간장,파,고추장">🍗 닭고기</button>
+        <button class="preset-btn" data-preset="돼지고기,김치,두부,대파">🥩 김치찌개</button>
+      </div>
+    </div>
+
+    <!-- 재료 요약 + 수정 링크 -->
+    <div class="ingredient-summary" id="ingredientSummary" hidden>
+      <span class="label">재료:</span>
+      <span id="ingredientList" class="ingredient-text"></span>
+      <a href="/" class="edit-link">← 재료 수정</a>
+    </div>
+
+    <!-- 옵션 -->
+    <div class="options-bar">
+      <label>
+        인원
+        <select id="servings">
+          <option value="1">1명</option>
+          <option value="2" selected>2명</option>
+          <option value="3">3명</option>
+          <option value="4">4명</option>
+          <option value="6">6명</option>
+          <option value="8">8명</option>
+        </select>
+      </label>
+      <label>
+        조리 시간
+        <select id="maxTime">
+          <option value="15">15분 이내</option>
+          <option value="30" selected>30분 이내</option>
+          <option value="60">60분 이내</option>
+          <option value="999">제한 없음</option>
+        </select>
+      </label>
+      <label class="diet-label">
+        <input type="checkbox" id="dietVeg" value="채식" /> 채식
+      </label>
+      <label class="diet-label">
+        <input type="checkbox" id="dietGluten" value="글루텐 프리" /> 글루텐 프리
+      </label>
+      <button class="btn btn-primary" id="generateBtn">레시피 생성</button>
+    </div>
+
+    <!-- 오류 -->
+    <div class="error-box" id="errorBox" hidden></div>
+
+    <!-- 스트리밍 원문 (파싱 실패 시 표시) -->
+    <pre class="raw-output" id="rawOutput" hidden></pre>
+
+    <!-- 레시피 카드 영역 -->
+    <div class="cards-grid" id="cardsGrid"></div>
+
+    <!-- 다시 생성 버튼 -->
+    <div class="regen-wrap" id="regenWrap" hidden>
+      <button class="btn btn-secondary" id="regenBtn">↺ 다시 생성</button>
+    </div>
+  </div>
+
+  <!-- 조리법 모달 -->
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle"></h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- 하단 네비게이션 -->
+  <nav class="bottom-nav">
+    <a href="/">🧊 재료 인식</a>
+    <a href="/recipe.html" class="active">🍳 레시피</a>
+    <a href="/profile.html">👤 마이 레시피</a>
+  </nav>
+
+  <script src="storage.js"></script>
+  <script src="recipe.js"></script>
+</body>
+</html>
